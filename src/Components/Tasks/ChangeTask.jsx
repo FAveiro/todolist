@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 
 //* Import icons
-import { X, FloppyDisk } from "phosphor-react";
-
-//* Generate ID
-import { v4 as uuidv4 } from "uuid";
+import { X } from "phosphor-react";
 
 //* List box
 import ListBox from "../Listbox/ListBox";
@@ -12,19 +9,27 @@ import ListBox from "../Listbox/ListBox";
 //* Data
 import { categoryValues, priorityValues } from "../../Data/data";
 
-function NewTask({ createNewTask, Id }) {
-  const [newTask, setNewTask] = useState({
-    title: "",
-    content: "",
-    category: null,
-    priority: null,
+function ChangeTask({
+  idChange,
+  titleChange,
+  contentChange,
+  categoryChange,
+  priorityChange,
+  setChangeTask,
+}) {
+  const [changeTaskData, setChangeTaskData] = useState({
+    id: idChange,
+    title: titleChange,
+    content: contentChange,
+    category: categoryChange,
+    priority: priorityChange,
   });
   const [error, setError] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setNewTask((prevTask) => {
+    setChangeTaskData((prevTask) => {
       return {
         ...prevTask,
         [name]: value,
@@ -33,23 +38,19 @@ function NewTask({ createNewTask, Id }) {
   };
 
   const handleSave = () => {
-    if (!newTask.title || !newTask.content) {
+    if (!changeTaskData.title || !changeTaskData.content) {
       setError(true);
     } else {
       //* Get information from array in local storage
-      const info = localStorage.getItem("Task");
-      const data = info ? JSON.parse(info) : [];
-      const newTaskData = {
-        id: uuidv4(),
-        parentId: Id,
-        title: newTask.title,
-        content: newTask.content,
-        category: newTask.category,
-        priority: newTask.priority
-      };
-      data.push(newTaskData);
-      localStorage.setItem("Task", JSON.stringify(data));
-      createNewTask(false);
+      const info = JSON.parse(localStorage.getItem("Task"));
+      const indexUpdate = info.findIndex((obj) => obj.id === changeTaskData.id);
+      info[indexUpdate].id = changeTaskData.id;
+      info[indexUpdate].title = changeTaskData.title;
+      info[indexUpdate].content = changeTaskData.content;
+      info[indexUpdate].category = changeTaskData.category;
+      info[indexUpdate].priority = changeTaskData.priority;
+      localStorage.setItem("Task", JSON.stringify(info));
+      setChangeTask(null);
       setError(false);
     }
   };
@@ -60,18 +61,18 @@ function NewTask({ createNewTask, Id }) {
         <input
           name="title"
           onChange={handleChange}
-          value={newTask.title}
+          value={changeTaskData.title}
           maxLength="15"
           placeholder="Title"
         />
-        <button onClick={() => createNewTask(false)}>
+        <button onClick={() => setChangeTask(null)}>
           <X size={22} weight="thin" />
         </button>
       </div>
       <textarea
         name="content"
         onChange={handleChange}
-        value={newTask.content}
+        value={changeTaskData.content}
         placeholder="Write a task..."
         rows={5}
       />
@@ -80,16 +81,16 @@ function NewTask({ createNewTask, Id }) {
           titleListBox="Category"
           info={categoryValues}
           name="category"
-          newValue={setNewTask}
-          value={newTask.category}
+          newValue={setChangeTaskData}
+          value={changeTaskData.category}
           disabledButton={false}
         />
         <ListBox
           titleListBox="Priority"
           info={priorityValues}
           name="priority"
-          newValue={setNewTask}
-          value={newTask.priority}
+          newValue={setChangeTaskData}
+          value={changeTaskData.priority}
           disabledButton={false}
         />
       </div>
@@ -111,4 +112,4 @@ function NewTask({ createNewTask, Id }) {
   );
 }
 
-export default NewTask;
+export default ChangeTask;

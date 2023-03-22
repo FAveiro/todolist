@@ -404,7 +404,25 @@
   gap: 10px;
 }
 
+.card_change {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
 
+.card_change button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+}
+
+.readmore {
+  width: fit-content;
+  cursor: pointer;
+}
 
 /* --- Listbox --- */
 
@@ -457,6 +475,10 @@
 /* ---------------------------------- */
 /*  Reuse                             */
 /* ---------------------------------- */
+
+button {
+  cursor: pointer;
+}
 
 button:active {
   transform: translateY(2px);

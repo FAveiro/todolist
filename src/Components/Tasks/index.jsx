@@ -10,10 +10,13 @@ import { FilterTaskContext } from "../../Contexts/FilterTask";
 //* Import components
 import NewTask from "./NewTask";
 import Cards from "./Cards";
+import ChangeTask from "./ChangeTask";
 
 function index() {
   const [data, setData] = useState([]);
   const [createNewTask, setCreateNewTask] = useState(false);
+  const [deleteTask, setDeleteTask] = useState(null);
+  const [changeIdTask, setChangeIdTask] = useState(null);
   const { groupTask } = useContext(GroupTaskContext);
   const { filterTask } = useContext(FilterTaskContext);
 
@@ -33,7 +36,9 @@ function index() {
     } else {
       setData([]);
     }
-  }, [groupTask, filterTask, createNewTask]);
+  }, [groupTask, filterTask, createNewTask, deleteTask, changeIdTask]);
+
+
 
   return (
     <div className="container_task">
@@ -50,16 +55,35 @@ function index() {
           <NewTask createNewTask={setCreateNewTask} Id={groupTask.id} />
         )}
         {data &&
-          data.map((task) => (
-            <Cards
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              content={task.content}
-              category={task.category}
-              priority={task.priority}
-            />
-          ))}
+          data.map((task) => {
+            if (changeIdTask != task.id) {
+              return (
+                <Cards
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  content={task.content}
+                  category={task.category}
+                  priority={task.priority}
+                  setDelete={setDeleteTask}
+                  setChangeTask={setChangeIdTask}
+                />
+              );
+            } else {
+              return (
+                <ChangeTask
+                  key={task.id}
+                  idChange={task.id}
+                  titleChange={task.title}
+                  contentChange={task.content}
+                  categoryChange={task.category}
+                  priorityChange={task.priority}
+                  setChangeTask={setChangeIdTask}
+
+                />
+              );
+            }
+          })}
       </div>
     </div>
   );

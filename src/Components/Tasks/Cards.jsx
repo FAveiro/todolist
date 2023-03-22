@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
 
-//* Data
-import { categoryValues, priorityValues } from "../../Data/data";
+//* Import icons
+import { PencilSimple, Trash } from "phosphor-react";
 
-//* Import components
-import ListBox from "../Listbox/ListBox";
-
-function Cards({ id, title, content, category, priority }) {
+function Cards({
+  id,
+  title,
+  content,
+  category,
+  priority,
+  setDelete,
+  setChangeTask,
+}) {
   const [showMore, setShowMore] = useState(false);
-  const [newValues, setNewValues] = useState({ category, priority });
   const readMoreText = showMore ? "Show Less" : "Read More...";
 
   const styles = {
     container: {
       display: "grid",
-      width: "23em",
+      width: "30em",
       height: "max-content",
       display: "flex",
       flexDirection: "column",
@@ -23,51 +27,70 @@ function Cards({ id, title, content, category, priority }) {
       backgroundColor: "rgba(19, 171, 176, 0.4)",
       boxShadow: "0px 0px 7px 0.1px #000000",
       gap: "10px",
+      padding: "10px 20px",
     },
     title: {
-      textDecoration: newValues.category.value === 'done' ? 'line-through' : null
-    }
+      textDecoration: category.value === "done" ? "line-through" : null,
+    },
   };
 
-  //* Change priority or category
-  useEffect(() => {
+  //* Delete task
+  const handleDelete = () => {
     //* Get information from array in local storage
     const info = JSON.parse(localStorage.getItem("Task"));
-    const indexUpdate = info.findIndex((obj) => obj.id === id);
-    if (info[indexUpdate].category.value != newValues.category.value) {
-      info[indexUpdate].category = newValues.category;
-    } else if (info[indexUpdate].priority.value != newValues.priority.value) {
-      info[indexUpdate].priority = newValues.priority;
-    }
-    localStorage.setItem("Task", JSON.stringify(info));
-  }, [newValues]);
+    const newArray = info.filter((obj) => {
+      return obj.id !== id;
+    });
+    localStorage.setItem("Task", JSON.stringify(newArray));
+    setDelete(id);
+  };
 
   return (
     <div style={styles.container}>
       <div className="card_header">
         <h3 style={styles.title}>{title}</h3>
         <div className="card_header_category">
-          <ListBox
-            titleListBox="Category"
-            info={categoryValues}
-            name="category"
-            newValue={setNewValues}
-            value={newValues.category}
-          />
-          <ListBox
-            titleListBox="Priority"
-            info={priorityValues}
-            name="priority"
-            newValue={setNewValues}
-            value={newValues.priority}
-          />
+          <div className="listbox_container_close">
+            <button>
+              <label
+                style={{
+                  color: category.color,
+                  fontWeight: "400",
+                }}
+              >
+                {category.text}
+              </label>
+            </button>
+          </div>
+          <div className="listbox_container_close">
+            <button>
+              <label
+                style={{
+                  color: priority.color,
+                  fontWeight: "400",
+                }}
+              >
+                {priority.text}
+              </label>
+            </button>
+          </div>
+          <div className="card_change">
+            <button onClick={() => setChangeTask(id)}>
+              <PencilSimple size={20} color="#13abb0" />
+            </button>
+            <button onClick={handleDelete}>
+              <Trash size={20} color="#ef4838" />
+            </button>
+          </div>
         </div>
       </div>
       <label className="task_card_container_label">
         {showMore ? content : content.substring(0, 150)}
       </label>
       {content.length > 150 && (
-        <h5 onClick={() => setShowMore(!showMore)}>{readMoreText}</h5>
+        <h5 className="readmore" onClick={() => setShowMore(!showMore)}>
+          {readMoreText}
+        </h5>
       )}
     </div>
   );

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 //* Import hooks
 import { useOutSideClick } from "../../Hooks/useOutSideClick";
 
-function ListBox({ titleListBox, info, name, newValue, value }) {
+function ListBox({ titleListBox, info, name, newValue, value, disabledButton }) {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(value ? value : info[0]);
 
@@ -31,7 +31,7 @@ function ListBox({ titleListBox, info, name, newValue, value }) {
     <>
       {!open ? (
         <div className="listbox_container_close">
-          <button onClick={() => setOpen(true)}>
+          <button disabled={disabledButton} onClick={() => setOpen(true)}>
             <label
               value={selected.value}
               style={{
