@@ -8,8 +8,6 @@ ToDo list is a simple web application to save tasks in order not to miss anythin
 * Set task category 
 * Set task priority
 * Delete all group with task's
-
-### To Do
 * Edit task
 * Delete task
 
